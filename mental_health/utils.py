@@ -2,9 +2,29 @@ import pandas as pd
 import numpy as np
 import matplotlib.pylab as plt
 import seaborn as sns
+import pycountry_convert as pc
+from pycountry import pycountry
 
 
-def clean_data(df: pd.DataFrame, min_data_years: int = 3) -> pd.DataFrame:
+country_name_map = {
+    'Saint Vincent and Grenadines': 'Saint Vincent and the Grenadines',
+    'Republic of Korea': 'Korea, Republic of',
+}
+
+
+def load_suicide_data(min_data_years: int = 3, path="datasets/suicide_ds_2016.csv", add_continent=True) -> pd.DataFrame:
+    df = pd.read_csv(path)
+
+    # drop data
+    df = df.drop(['HDI for year', 'country-year'], axis='columns')
+
+    # rename columns to be snake case conform and remove $ currency
+    df = df.rename(columns={
+        'suicides/100k pop': 'suicides_per_100k_pop',
+        # the extra spaces in the name below are intended!
+        ' gdp_for_year ($) ': 'gdp_for_year',
+        'gdp_per_capita ($)': 'gdp_per_capita'
+    })
     # rm 2016
     df = df[df['year'] != 2016]
 
@@ -15,4 +35,26 @@ def clean_data(df: pd.DataFrame, min_data_years: int = 3) -> pd.DataFrame:
     temp = country_years.reset_index()
     names = temp[temp.year <= min_data_years].country.values
     df = df[~df['country'].isin(names)]
+
+    # add country code and continent
+    df['country_code'] = [
+        pc.country_name_to_country_alpha3(country_name_map.get(c, c)) for c in df.country
+    ]
+    df['continent'] = [
+        pc.convert_continent_code_to_continent_name(
+            pc.country_alpha2_to_continent_code(
+                pycountry.countries.get(alpha_3=cc).alpha_2
+            ))
+        for cc in df.country_code
+    ]
+
     return df
+
+
+def load_gini(path="datasets/gini.csv") -> pd.DataFrame:
+    df = pd.read_csv(path, delimiter=',')
+    # melt df and remove years without data
+    melted_df = df.melt(['Country Name', 'Country Code', 'Indicator Name',
+                        'Indicator Code'], var_name="year", value_name='gini')
+    melted_df = melted_df[melted_df['gini'].notna()]
+    return melted_df
