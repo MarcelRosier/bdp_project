@@ -12,7 +12,7 @@ country_name_map = {
 }
 
 
-def load_suicide_data(min_data_years: int = 3, path="datasets/suicide_ds_2016.csv", add_continent=True) -> pd.DataFrame:
+def load_suicide_data(min_data_years: int = 3, path="datasets/suicide_ds_2016.csv") -> pd.DataFrame:
     df = pd.read_csv(path)
 
     # drop data
@@ -57,4 +57,46 @@ def load_gini(path="datasets/gini.csv") -> pd.DataFrame:
     melted_df = df.melt(['Country Name', 'Country Code', 'Indicator Name',
                         'Indicator Code'], var_name="year", value_name='gini')
     melted_df = melted_df[melted_df['gini'].notna()]
+    melted_df = melted_df[['Country Name', 'Country Code', 'year', 'gini']]
+    melted_df = melted_df.rename(columns={
+        'Country Name': 'country',
+        'Country Code': 'country_code'
+    })
+    # change type and select year range
+    melted_df.year = melted_df.year.astype(int)
+    melted_df = melted_df[melted_df.year.between(2010, 2015)]
+
     return melted_df
+
+
+def load_healthcare() -> pd.DataFrame:
+    df = pd.read_csv('datasets/healtcare_coverage.csv')
+    df = df[['COU', 'Country', 'Year', 'Value']]
+    df = df.rename(columns={
+        'COU': 'country_code',
+        'Country': 'country',
+        'Year': 'year',
+        'Value': 'healthcare_coverage'
+    })
+    # limit to 2010-2015
+    df = df[df.year.between(2010, 2015)]
+    # rm spain and russia sicne they have missing data
+    df = df[~df.country.isin(['Spain', 'Russia'])]
+    return df
+
+
+def load_suicide_healthcare_gini_df() -> pd.DataFrame:
+
+    suicide_df = load_suicide_data()
+    suicide_df = suicide_df[suicide_df.year.between(2010, 2015)]
+
+    gini_df = load_gini()
+    gini_df = gini_df[['country_code', 'year', 'gini']]
+    health_df = load_healthcare()
+    health_df = health_df[['country_code', 'year', 'healthcare_coverage']]
+    gh = health_df.merge(gini_df, on=['year', 'country_code'])
+
+    # not all countries have entries for all combinations of country, age, sex, year
+    # but there are no missing entries in rows, so it should be fine
+    df = suicide_df.merge(gh, on=['year', 'country_code'])
+    return df
