@@ -100,3 +100,37 @@ def load_suicide_healthcare_gini_df() -> pd.DataFrame:
     # but there are no missing entries in rows, so it should be fine
     df = suicide_df.merge(gh, on=['year', 'country_code'])
     return df
+
+
+def get_train_test_split():
+    df = load_suicide_healthcare_gini_df()
+    # transform text columns to categories
+    df.country = pd.Categorical(df.country).codes
+    df.continent = pd.Categorical(df.continent).codes
+    df.sex = pd.Categorical(df.sex).codes
+    df.age = pd.Categorical(df.age).codes
+
+    # split data
+    test_df = df[df.year == 2015]
+    train_df = df[df.year < 2015]
+
+    # extract values
+    X_cols = ['country', 'continent', 'sex', 'age', 'year',
+              'gdp_per_capita', 'healthcare_coverage', 'gini', 'population']
+    X_train = train_df[X_cols].values
+    Y_train = train_df['suicides_no'].values
+
+    X_test = test_df[X_cols].values
+    Y_test = test_df['suicides_no'].values
+
+    # scale data
+    from sklearn.preprocessing import StandardScaler, MinMaxScaler
+    # create a standard scaler object and fit it to the training data
+    scaler = MinMaxScaler()  # StandardScaler()
+    scaler.fit(X_train)
+
+    # transform the training and test data using the scaler
+    X_train_std = scaler.transform(X_train)
+    X_test_std = scaler.transform(X_test)
+
+    return X_train_std, X_test_std, Y_train, Y_test
