@@ -102,7 +102,7 @@ def load_suicide_healthcare_gini_df() -> pd.DataFrame:
     return df
 
 
-def get_train_test_split():
+def get_train_test_split(X_Cols=None):
     df = load_suicide_healthcare_gini_df()
     # transform text columns to categories
     df.country = pd.Categorical(df.country).codes
@@ -115,8 +115,10 @@ def get_train_test_split():
     train_df = df[df.year < 2015]
 
     # extract values
-    X_cols = ['country', 'continent', 'sex', 'age', 'year',
-              'gdp_per_capita', 'healthcare_coverage', 'gini', 'population']
+    if not X_Cols:
+        # use default cols
+        X_cols = ['country', 'continent', 'sex', 'age', 'year',
+                  'gdp_per_capita', 'healthcare_coverage', 'gini', 'population']
     X_train = train_df[X_cols].values
     Y_train = train_df['suicides_no'].values
 
