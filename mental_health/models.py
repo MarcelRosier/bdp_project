@@ -5,7 +5,7 @@ import utils
 from joblib import dump, load
 from sklearn.linear_model import LinearRegression
 from sklearn.metrics import (max_error, mean_absolute_error,
-                             mean_squared_error, median_absolute_error)
+                             mean_squared_error, median_absolute_error, r2_score)
 from sklearn.neural_network import MLPRegressor
 from sklearn.tree import DecisionTreeRegressor
 from torch import nn
