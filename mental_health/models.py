@@ -10,6 +10,8 @@ from sklearn.neural_network import MLPRegressor
 from sklearn.tree import DecisionTreeRegressor
 from torch import nn
 from xgboost.sklearn import XGBRegressor
+from sklearn.neighbors import KNeighborsRegressor
+from sklearn.ensemble import RandomForestRegressor
 
 
 class SuicideRegressor(nn.Module):
@@ -64,7 +66,10 @@ class Wrapper:
             hidden_layer_sizes=[512, 256, 64, 8],
             max_iter=3000,
             activation='relu'),
-        'XGBRegressor': XGBRegressor()
+        'XGBRegressor': XGBRegressor(),
+        'RandomForestRegressor': RandomForestRegressor(),
+        'KNeighborsRegressor': KNeighborsRegressor()
+
     }
 
     def __init__(self, models: dict) -> None:
