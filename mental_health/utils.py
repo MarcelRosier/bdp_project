@@ -1,3 +1,5 @@
+import math
+from sklearn.metrics import mean_squared_error
 import pandas as pd
 import numpy as np
 import matplotlib.pylab as plt
@@ -136,3 +138,7 @@ def get_train_test_split(X_cols=None):
     X_test_std = scaler.transform(X_test)
 
     return X_train_std, X_test_std, Y_train, Y_test
+
+
+def root_mean_squared_error(y_true, y_pred) -> float:
+    return mean_squared_error(y_true=y_true, y_pred=y_pred, squared=False)

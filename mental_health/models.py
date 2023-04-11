@@ -59,7 +59,7 @@ class SuicideRegressorBN(nn.Module):
 
 class Wrapper:
 
-    ALL_MODELS = {
+    ALL_MODELS_UNTRAINED = {
         'LinearRegression': LinearRegression(positive=False),
         'DecisionTreeRegressor': DecisionTreeRegressor(random_state=0),
         'MLPRegressor': MLPRegressor(
@@ -69,7 +69,6 @@ class Wrapper:
         'XGBRegressor': XGBRegressor(),
         'RandomForestRegressor': RandomForestRegressor(),
         'KNeighborsRegressor': KNeighborsRegressor()
-
     }
 
     def __init__(self, models: dict) -> None:
