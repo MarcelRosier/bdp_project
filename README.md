@@ -19,7 +19,7 @@ As a closets match we added the Healtcare dataset and additionaly added the GINI
 
 ## Data cleaning
 
-All data cleaning and loading code is located in [utils.py](mental_health/utils.py)
+All data cleaning and loading code is in [utils.py](mental_health/utils.py)
 
 ### Suicide Dataset | `load_suicide_data()`
 
@@ -65,9 +65,10 @@ All data cleaning and loading code is located in [utils.py](mental_health/utils.
 - Merge Healthcare and GINI data on 'year' and 'country_code'
 - Merge filtered Suicide df with previous merge results on 'year' and 'country_code'
 
-### Preprocessing | `get_train_test_split`
+### Preprocessing | `get_train_test_split()`
 
-To make the data suitable as input for our models some columns have to be converted to numerical values. Additionaly the data has to be separated into feature and label parts and split into a train and test set.
+To make the data suitable as input for our models some columns have to be converted to numerical values. Additionaly the data has to be separated into feature and label parts and split into a train and test set.  
+Code in [utils.py](mental_health/utils.py).
 
 - Conversions:  
   country, continent, sex and age are converted to numerical values
@@ -94,17 +95,17 @@ To make the data suitable as input for our models some columns have to be conver
 ### Model types
 
 - Linear model
-  - LinearRegression
+  - LinearRegression (sklearn)
 - Tree model
-  - DecisionTreeRegressor
+  - DecisionTreeRegressor (sklearn)
 - Neighbour model
-  - KNeighborsRegressor
+  - KNeighborsRegressor (sklearn)
 - Ensemble methods
-  - RandomForestRegressor
-  - XGBRegressor
+  - RandomForestRegressor (sklearn)
+  - XGBRegressor (xgboost.sklearn)
 - Neural networks
   - MLPRegressor (sklearn)
-  - Custom MLP (PyTorch)
+  - Custom MLP (PyRorch)
 
 ### Metrics
 
