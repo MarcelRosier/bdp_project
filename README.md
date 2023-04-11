@@ -65,6 +65,30 @@ All data cleaning and loading code is located in [utils.py](mental_health/utils.
 - Merge Healthcare and GINI data on 'year' and 'country_code'
 - Merge filtered Suicide df with previous merge results on 'year' and 'country_code'
 
+### Preprocessing | `get_train_test_split`
+
+To make the data suitable as input for our models some columns have to be converted to numerical values. Additionaly the data has to be separated into feature and label parts and split into a train and test set.
+
+- Conversions:  
+  country, continent, sex and age are converted to numerical values
+  ```python
+  # example for country column
+  df.country = pd.Categorical(df.country).codes
+  ```
+- Feature/ Label split:  
+   We want to predict the number of suicides based on a set of input features. Hence we chose:
+
+  - Features:  
+     `['country', 'continent', 'sex', 'age', 'year',
+'gdp_per_capita', 'healthcare_coverage', 'gini', 'population']`
+  - Label: `['suicides_no']`
+
+- Train/ Test split:
+  Since we want to predict future suicide rates we split the data into:
+  - Training: data $\in [2010; 2014]$; 1788 samples ~ 86,6%
+  - Test: data $\in [2015]$; 276 samples ~ 13,4%
+  - ?TODO: split Test into Test and Valdiation?
+
 ## Modeling
 
 ### Model types
@@ -85,4 +109,6 @@ All data cleaning and loading code is located in [utils.py](mental_health/utils.
 - r2_score
 - mean_absolute_error
 
-### Model evlauation and comparison
+### Model evaluation and comparison
+
+`TODO`
