@@ -93,14 +93,18 @@ To make the data suitable as input for our models some columns have to be conver
 
 ### Model types
 
-- sklearn
+- Linear model
   - LinearRegression
+- Tree model
   - DecisionTreeRegressor
-  - MLPRegressor
-  - RandomForestRegressor
+- Neighbour model
   - KNeighborsRegressor
-- XGBRegressor
-- Custom MLP model using PyTorch
+- Ensemble methods
+  - RandomForestRegressor
+  - XGBRegressor
+- Neural networks
+  - MLPRegressor (sklearn)
+  - Custom MLP (PyTorch)
 
 ### Metrics
 
