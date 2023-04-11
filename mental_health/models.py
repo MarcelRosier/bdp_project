@@ -1,5 +1,4 @@
 import os
-import pickle
 
 import utils
 from joblib import dump, load
