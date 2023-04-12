@@ -11,7 +11,7 @@ from sklearn.ensemble import RandomForestRegressor
 from sklearn.linear_model import LinearRegression
 from sklearn.metrics import (max_error, mean_absolute_error,
                              mean_squared_error, median_absolute_error,
-                             r2_score)
+                             r2_score, mean_squared_log_error, d2_absolute_error_score)
 from sklearn.neighbors import KNeighborsRegressor
 from sklearn.neural_network import MLPRegressor
 from sklearn.tree import DecisionTreeRegressor
@@ -47,7 +47,7 @@ class ModelAnalysis:
 
     }
     ALL_METRICS = [mean_squared_error, utils.root_mean_squared_error,
-                   r2_score, mean_absolute_error]
+                   r2_score, mean_absolute_error, max_error, ]
 
     def __init__(self, models: dict) -> None:
         self.models: dict = models
