@@ -9,9 +9,9 @@ The dataset is a merge of 3 main sources:
 - [Healtcare Coverage Dataset](https://stats.oecd.org/Index.aspx?ThemeTreeId=9)
 
 The base Suicide Dataset was extended to grant more features for modeling.
-For this purpose we searched for possible datasets that could matdch factors listed here: https://www.cdc.gov/suicide/factors/index.html.
-For most features it's ahrd to find proper datasets that cover a variety of countries and years.
-As a closets match we added the Healtcare dataset and additionaly added the GINI dataset to account for factors that might be realted with social inequality.
+For this purpose we searched for possible datasets that could match factors listed here: https://www.cdc.gov/suicide/factors/index.html.
+For most features it's hard to find proper datasets that cover a variety of countries and years.
+As a compromise we added the Healthcare dataset (access to healthcare is listed as a factor) and additionaly added the GINI dataset to account for factors that might be related with social inequality.
 
 ## EDA
 
@@ -67,7 +67,7 @@ All data cleaning and loading code is in [utils.py](mental_health/utils.py)
 
 ### Preprocessing | `get_train_test_split()`
 
-To make the data suitable as input for our models some columns have to be converted to numerical values. Additionaly the data has to be separated into feature and label parts and split into a train and test set.  
+To make the data suitable as input for our models some columns have to be converted to numerical values. Additionaly the data has to be separated into feature and label parts and split into a train and test set. (maybe also a validation set later)  
 Code in [utils.py](mental_health/utils.py).
 
 - Conversions:  
@@ -77,7 +77,7 @@ Code in [utils.py](mental_health/utils.py).
   df.country = pd.Categorical(df.country).codes
   ```
 - Feature/ Label split:  
-   We want to predict the number of suicides based on a set of input features. Hence we chose:
+   We want to predict the number of suicides based on a set of input features. We experimented with choosing only a subset of available features but using all yielded the best results. Hence we chose:
 
   - Features:  
      `['country', 'continent', 'sex', 'age', 'year',
