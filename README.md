@@ -105,7 +105,7 @@ Code in [utils.py](mental_health/utils.py).
   - XGBRegressor (xgboost.sklearn)
 - Neural networks
   - MLPRegressor (sklearn)
-  - Custom MLP (PyRorch)
+  - Custom MLP (PyTorch)
 
 ### Metrics
 
