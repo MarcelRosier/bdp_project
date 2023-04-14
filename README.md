@@ -15,7 +15,11 @@ As a compromise we added the Healthcare dataset (access to healthcare is listed 
 
 ## EDA
 
-`TODO`
+Refer to EDA notebook:
+
+- [Suicide Dataset](mental_health/eda_suicide.ipynb)
+- [GINI Dataset](mental_health/eda_gini.ipynb)
+- [Healtcare Coverage Dataset](mental_health/eda_hc_coverage.ipynb)
 
 ## Data cleaning
 
@@ -93,7 +97,7 @@ Code in [utils.py](mental_health/utils.py).
   - `get_train_val_test_split`:
     Perform a random split of the data into train, val & test
     - Training: 1651 samples ~ 80%
-    - Validation: 206 ~ 10%
+    - Validation: 206 samples ~ 10%
     - Test: 207 samples ~ 10%
 
 ## Modeling
@@ -119,6 +123,7 @@ Code in [utils.py](mental_health/utils.py).
 - root_mean_squared_error
 - r2_score
 - mean_absolute_error
+- max_error
 
 ### Model evaluation and comparison
 
