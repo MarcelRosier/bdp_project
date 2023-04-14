@@ -65,9 +65,9 @@ All data cleaning and loading code is in [utils.py](mental_health/utils.py)
 - Merge Healthcare and GINI data on 'year' and 'country_code'
 - Merge filtered Suicide df with previous merge results on 'year' and 'country_code'
 
-### Preprocessing | `get_train_test_split()`
+### Preprocessing`
 
-To make the data suitable as input for our models some columns have to be converted to numerical values. Additionaly the data has to be separated into feature and label parts and split into a train and test set. (maybe also a validation set later)  
+To make the data suitable as input for our models some columns have to be converted to numerical values. Additionaly the data has to be separated into feature and label parts and split into a train, valdiation and test set.
 Code in [utils.py](mental_health/utils.py).
 
 - Conversions:  
@@ -85,10 +85,16 @@ Code in [utils.py](mental_health/utils.py).
   - Label: `['suicides_no']`
 
 - Train/ Test split:
-  Since we want to predict future suicide rates we split the data into:
-  - Training: data $\in [2010; 2014]$; 1788 samples ~ 86,6%
-  - Test: data $\in [2015]$; 276 samples ~ 13,4%
-  - ?TODO: split Test into Test and Valdiation?
+  Currently 2 implementations:
+  - `get_train_test_split_legacy()`:
+    Split data into train (up to 2014) and test (2015):
+    - Training: data $\in [2010; 2014]$; 1788 samples ~ 86,6%
+    - Test: data $\in [2015]$; 276 samples ~ 13,4%
+  - `get_train_val_test_split`:
+    Perform a random split of the data into train, val & test
+    - Training: 1651 samples ~ 80%
+    - Validation: 206 ~ 10%
+    - Test: 207 samples ~ 10%
 
 ## Modeling
 
