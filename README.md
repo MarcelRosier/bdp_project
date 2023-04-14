@@ -65,7 +65,7 @@ All data cleaning and loading code is in [utils.py](mental_health/utils.py)
 - Merge Healthcare and GINI data on 'year' and 'country_code'
 - Merge filtered Suicide df with previous merge results on 'year' and 'country_code'
 
-### Preprocessing`
+### Preprocessing
 
 To make the data suitable as input for our models some columns have to be converted to numerical values. Additionaly the data has to be separated into feature and label parts and split into a train, valdiation and test set.
 Code in [utils.py](mental_health/utils.py).
