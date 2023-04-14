@@ -51,12 +51,19 @@ class ModelAnalysis:
 
     def __init__(self, models: dict) -> None:
         self.models: dict = models
-        self.X_train_std, self.X_test_std, self.Y_train, self.Y_test = utils.get_train_test_split()
+        # self.X_train_std, self.X_test_std, self.Y_train, self.Y_test = utils.get_train_test_split()
+        self.splits = utils.get_train_val_test_split()
+
+        # self.X_train, self.y_train = self.splits['train']['X'], self.splits['train']['y']
+        # self.X_val, self.y_val = self.splits['val']['X'], self.splits['val']['y']
+        # self.X_test, self.y_test = self.splits['test']['X'], self.splits['test']['y']
+
+        self.predictions = {}
 
     def train(self) -> None:
         for model_name, model in self.models.items():
             print(f"Fitting {model_name}")
-            model.fit(self.X_train_std, self.Y_train)
+            model.fit(self.splits['train']['X'], self.splits['train']['y'])
 
     def get_models(self) -> dict:
         return self.models
@@ -71,31 +78,33 @@ class ModelAnalysis:
         for model_name in self.models.keys():
             self.models[model_name] = load(f"{base_path}/{model_name}.joblib")
 
-    def predict_test(self) -> dict:
+    def predict(self, split: str = 'test') -> dict:
         predictions = {}
         for model_name, model in self.models.items():
-            predictions[model_name] = model.predict(self.X_test_std)
-        self.predictions_test = predictions
+            predictions[model_name] = model.predict(self.splits[split]['X'])
+        self.predictions[split] = predictions
         return predictions
 
-    def evaluate(self, metric=mean_absolute_error, verbose: bool = False) -> dict:
+    def evaluate(self, metric=utils.root_mean_squared_error, split: str = 'test', verbose: bool = False) -> dict:
         scores = {}
         for model_name in self.models.keys():
-            scores[model_name] = metric(y_true=self.Y_test,
-                                        y_pred=self.predictions_test[model_name])
+            scores[model_name] = metric(
+                y_true=self.splits[split]['y'],
+                y_pred=self.predictions[split][model_name]
+            )
             if verbose:
                 print(f"{model_name}: {scores[model_name]}")
         return scores
 
-    def visualize_predictions(self, sample_range: Tuple = (0, 32)) -> None:
+    def visualize_predictions(self, sample_range: Tuple = (0, 32), split: str = 'test') -> None:
         """
         Visualizes the predicitons of all models plotted against the ground truth Y
         by default only a subset of predicitons is plotted (0,32), this range can be adapted with @sample_range
         """
         sr_start, sr_end = sample_range
         preds_subset = {k: preds[sr_start:sr_end]
-                        for k, preds in self.predictions_test.items()}
-        preds_subset['Y'] = self.Y_test[sr_start:sr_end]
+                        for k, preds in self.predictions[split].items()}
+        preds_subset['Y'] = self.splits[split]['y'][sr_start:sr_end]
 
         pred_df = pd.DataFrame(preds_subset)
 
@@ -109,7 +118,7 @@ class ModelAnalysis:
         sns.lineplot(pred_df[[k for k in self.PALETTE.keys() if k != 'Y']],
                      alpha=.5, ax=ax, palette=self.PALETTE, linewidth=.8, legend=False)
 
-    def visualize_metrics(self, metrics: List = ALL_METRICS) -> None:
+    def visualize_metrics(self, metrics: List = ALL_METRICS, split: str = 'test') -> None:
         num_metrcis = len(metrics)
         ncols = 2
         nrows = math.ceil(num_metrcis / 2)
@@ -122,7 +131,7 @@ class ModelAnalysis:
                 metric = metrics[index]
                 df = pd.DataFrame({
                     'model': self.models.keys(),
-                    'score': self.evaluate(metric=metric).values(),
+                    'score': self.evaluate(metric=metric, split=split).values(),
                 })
                 sns.barplot(df, x='model', y='score',
                             ax=ax[row][col], palette=self.PALETTE)
