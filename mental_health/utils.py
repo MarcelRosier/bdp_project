@@ -1,3 +1,4 @@
+from sklearn.model_selection import train_test_split
 import math
 from sklearn.metrics import mean_squared_error
 import pandas as pd
@@ -104,7 +105,7 @@ def load_suicide_healthcare_gini_df() -> pd.DataFrame:
     return df
 
 
-def get_train_test_split(X_cols=None):
+def get_train_test_split_legacy(X_cols=None):
     df = load_suicide_healthcare_gini_df()
     # transform text columns to categories
     df.country = pd.Categorical(df.country).codes
@@ -129,8 +130,7 @@ def get_train_test_split(X_cols=None):
 
     # scale data
     from sklearn.preprocessing import StandardScaler, MinMaxScaler
-    # create a standard scaler object and fit it to the training data
-    scaler = MinMaxScaler()  # StandardScaler()
+    scaler = StandardScaler()
     scaler.fit(X_train)
 
     # transform the training and test data using the scaler
@@ -142,3 +142,60 @@ def get_train_test_split(X_cols=None):
 
 def root_mean_squared_error(y_true, y_pred) -> float:
     return mean_squared_error(y_true=y_true, y_pred=y_pred, squared=False)
+
+
+def get_train_val_test_split(X_cols=None):
+    df = load_suicide_healthcare_gini_df()
+    # transform text columns to categories
+    df.country = pd.Categorical(df.country).codes
+    df.continent = pd.Categorical(df.continent).codes
+    df.sex = pd.Categorical(df.sex).codes
+    df.age = pd.Categorical(df.age).codes
+
+    # extract values
+    if not X_cols:
+        # use default cols
+        X_cols = ['country', 'continent', 'sex', 'age', 'year',
+                  'gdp_per_capita', 'healthcare_coverage', 'gini', 'population']
+    X = df[X_cols].values
+    y = df['suicides_no'].values
+
+    # get train val test split
+
+    train_ratio = 0.8
+    validation_ratio = 0.10
+    test_ratio = 0.10
+
+    # train is now 80% of the entire data set
+    X_train, X_test, y_train, y_test = train_test_split(
+        X, y, test_size=1 - train_ratio)
+
+    # test is now 10% of the initial data set
+    # validation is now 10% of the initial data set
+    X_val, X_test, y_val, y_test = train_test_split(
+        X_test, y_test, test_size=test_ratio/(test_ratio + validation_ratio))
+
+    # scale data
+    from sklearn.preprocessing import StandardScaler, MinMaxScaler
+    scaler = StandardScaler()
+    scaler.fit(X_train)
+
+    # transform the training and test data using the scaler
+    X_train_std = scaler.transform(X_train)
+    X_val_std = scaler.transform(X_val)
+    X_test_std = scaler.transform(X_test)
+
+    return {
+        'train': {
+            'X': X_train_std,
+            'y': y_train
+        },
+        'val': {
+            'X': X_val_std,
+            'y': y_val
+        },
+        'test': {
+            'X': X_test_std,
+            'y': y_test
+        },
+    }
