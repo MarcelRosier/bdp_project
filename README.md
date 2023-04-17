@@ -15,7 +15,13 @@ As a compromise we added the Healthcare dataset (access to healthcare is listed 
 
 ## EDA
 
-Refer to EDA notebook:
+Refer to EDA notebooks:
+
+Main EDA for final dataset:
+
+- [Dataset](mental_health/eda_ds.ipynb)
+
+EDA by base datasets:
 
 - [Suicide Dataset](mental_health/eda_suicide.ipynb)
 - [GINI Dataset](mental_health/eda_gini.ipynb)
@@ -86,7 +92,7 @@ Code in [utils.py](mental_health/utils.py).
   - Features:  
      `['country', 'continent', 'sex', 'age', 'year',
 'gdp_per_capita', 'healthcare_coverage', 'gini', 'population']`
-  - Label: `['suicides_no']`
+  - Label: `['suicides_per_100k_pop']` (Note: used to be `['suicides_no']`)
 
 - Train/ Test split:
   Currently 2 implementations:
