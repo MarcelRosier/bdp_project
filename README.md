@@ -83,6 +83,7 @@ Code in [utils.py](mental_health/utils.py).
 - Conversions:  
   country, continent, sex and age are converted to numerical values
   ```python
+  # reference: https://pandas.pydata.org/docs/user_guide/categorical.html
   # example for country column
   df.country = pd.Categorical(df.country).codes
   ```

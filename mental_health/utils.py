@@ -112,8 +112,12 @@ def load_suicide_healthcare_gini_df(cols=None) -> pd.DataFrame:
 
 def get_train_test_split_legacy(X_cols=None):
 
-    df = load_suicide_healthcare_gini_df(X_cols=X_cols)
-    # transform text columns to categories
+    df = load_suicide_healthcare_gini_df()
+    if not X_cols:
+        # use default cols
+        X_cols = ['country', 'continent', 'sex', 'age', 'year',
+                  'gdp_per_capita', 'healthcare_coverage', 'gini', 'population']
+    # transform text columns to categories (all unordered, since ordered=False by default)
     df.country = pd.Categorical(df.country).codes
     df.continent = pd.Categorical(df.continent).codes
     df.sex = pd.Categorical(df.sex).codes
@@ -147,7 +151,7 @@ def root_mean_squared_error(y_true, y_pred) -> float:
 
 def get_train_val_test_split(X_cols=None, y='suicides_no'):
     df = load_suicide_healthcare_gini_df()
-    # transform text columns to categories
+    # transform text columns to categories (all unordered, since ordered=False by default)
     df.country = pd.Categorical(df.country).codes
     df.continent = pd.Categorical(df.continent).codes
     df.sex = pd.Categorical(df.sex).codes
