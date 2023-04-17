@@ -49,10 +49,10 @@ class ModelAnalysis:
     ALL_METRICS = [mean_squared_error, utils.root_mean_squared_error,
                    r2_score, mean_absolute_error, max_error, ]
 
-    def __init__(self, models: dict) -> None:
+    def __init__(self, models: dict, y: str = 'suicides_per_100k_pop') -> None:
         self.models: dict = models
         # self.X_train_std, self.X_test_std, self.Y_train, self.Y_test = utils.get_train_test_split()
-        self.splits = utils.get_train_val_test_split()
+        self.splits = utils.get_train_val_test_split(y=y)
 
         # self.X_train, self.y_train = self.splits['train']['X'], self.splits['train']['y']
         # self.X_val, self.y_val = self.splits['val']['X'], self.splits['val']['y']
@@ -110,7 +110,8 @@ class ModelAnalysis:
 
         fig, ax = plt.subplots(figsize=(15, 7))
         ax.set_xlabel('Datapoint index')
-        ax.set_ylabel('Number of suicides (Y and model predicitons)')
+        ax.set_ylabel(
+            'Number of suicides per 100k population (Y and model predicitons)')
         sns.scatterplot(pred_df, markers=True, alpha=.6,
                         ax=ax, palette=self.PALETTE)
         sns.lineplot(pred_df.Y, alpha=.9, ax=ax,

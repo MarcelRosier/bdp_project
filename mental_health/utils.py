@@ -145,7 +145,7 @@ def root_mean_squared_error(y_true, y_pred) -> float:
     return mean_squared_error(y_true=y_true, y_pred=y_pred, squared=False)
 
 
-def get_train_val_test_split(X_cols=None):
+def get_train_val_test_split(X_cols=None, y='suicides_no'):
     df = load_suicide_healthcare_gini_df()
     # transform text columns to categories
     df.country = pd.Categorical(df.country).codes
@@ -159,7 +159,7 @@ def get_train_val_test_split(X_cols=None):
         X_cols = ['country', 'continent', 'sex', 'age', 'year',
                   'gdp_per_capita', 'healthcare_coverage', 'gini', 'population']
     X = df[X_cols].values
-    y = df['suicides_no'].values
+    y = df[y].values
 
     # get train val test split
 
