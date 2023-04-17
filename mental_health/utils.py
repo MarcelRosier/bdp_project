@@ -88,7 +88,7 @@ def load_healthcare() -> pd.DataFrame:
     return df
 
 
-def load_suicide_healthcare_gini_df() -> pd.DataFrame:
+def load_suicide_healthcare_gini_df(cols=None) -> pd.DataFrame:
 
     suicide_df = load_suicide_data()
     suicide_df = suicide_df[suicide_df.year.between(2010, 2015)]
@@ -102,11 +102,17 @@ def load_suicide_healthcare_gini_df() -> pd.DataFrame:
     # not all countries have entries for all combinations of country, age, sex, year
     # but there are no missing entries in rows, so it should be fine
     df = suicide_df.merge(gh, on=['year', 'country_code'])
+    # if not cols:
+    #     # use default cols
+    #     cols = ['country', 'continent', 'sex', 'age', 'year',
+    #             'gdp_per_capita', 'healthcare_coverage', 'gini', 'population', 'suicides_no']
+    # df = df[cols]
     return df
 
 
 def get_train_test_split_legacy(X_cols=None):
-    df = load_suicide_healthcare_gini_df()
+
+    df = load_suicide_healthcare_gini_df(X_cols=X_cols)
     # transform text columns to categories
     df.country = pd.Categorical(df.country).codes
     df.continent = pd.Categorical(df.continent).codes
@@ -117,11 +123,6 @@ def get_train_test_split_legacy(X_cols=None):
     test_df = df[df.year == 2015]
     train_df = df[df.year < 2015]
 
-    # extract values
-    if not X_cols:
-        # use default cols
-        X_cols = ['country', 'continent', 'sex', 'age', 'year',
-                  'gdp_per_capita', 'healthcare_coverage', 'gini', 'population']
     X_train = train_df[X_cols].values
     Y_train = train_df['suicides_no'].values
 
@@ -174,7 +175,9 @@ def get_train_val_test_split(X_cols=None):
     # validation is now 10% of the initial data set
     X_val, X_test, y_val, y_test = train_test_split(
         X_test, y_test, test_size=test_ratio/(test_ratio + validation_ratio))
-
+    # print(len(y_train))
+    # print(len(y_val))
+    # print(len(y_test))
     # scale data
     from sklearn.preprocessing import StandardScaler, MinMaxScaler
     scaler = StandardScaler()
