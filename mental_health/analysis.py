@@ -96,7 +96,7 @@ class ModelAnalysis:
                 print(f"{model_name}: {scores[model_name]}")
         return scores
 
-    def visualize_predictions(self, sample_range: Tuple = (0, 32), split: str = 'test') -> None:
+    def visualize_predictions(self, sample_range: Tuple = (0, 32), split: str = 'test', palette=sns.color_palette()) -> None:
         """
         Visualizes the predicitons of all models plotted against the ground truth Y
         by default only a subset of predicitons is plotted (0,32), this range can be adapted with @sample_range
@@ -113,13 +113,13 @@ class ModelAnalysis:
         ax.set_ylabel(
             'Number of suicides per 100k population (Y and model predicitons)')
         sns.scatterplot(pred_df, markers=True, alpha=.6,
-                        ax=ax, palette=self.PALETTE)
+                        ax=ax, palette=palette)
         sns.lineplot(pred_df.Y, alpha=.9, ax=ax,
                      color=self.Y_COLOR, linewidth=2, legend=False)
-        sns.lineplot(pred_df[[k for k in self.PALETTE.keys() if k != 'Y']],
-                     alpha=.5, ax=ax, palette=self.PALETTE, linewidth=.8, legend=False)
+        sns.lineplot(pred_df[[k for k in self.models.keys() if k != 'Y']],
+                     alpha=.5, ax=ax, palette=palette, linewidth=.8, legend=False)
 
-    def visualize_metrics(self, metrics: List = ALL_METRICS, split: str = 'test') -> None:
+    def visualize_metrics(self, metrics: List = ALL_METRICS, split: str = 'test', palette=None, verbose=False) -> None:
         num_metrcis = len(metrics)
         ncols = 2
         nrows = math.ceil(num_metrcis / 2)
@@ -134,6 +134,9 @@ class ModelAnalysis:
                     'model': self.models.keys(),
                     'score': self.evaluate(metric=metric, split=split).values(),
                 })
+                if verbose:
+                    print(metric.__name__)
+                    print(df)
                 sns.barplot(df, x='model', y='score',
-                            ax=ax[row][col], palette=self.PALETTE)
+                            ax=ax[row][col], palette=palette)
                 ax[row][col].set_title(metric.__name__)
