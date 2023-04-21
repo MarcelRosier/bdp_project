@@ -49,7 +49,7 @@ class ModelAnalysis:
     ALL_METRICS = [mean_squared_error, utils.root_mean_squared_error,
                    r2_score, mean_absolute_error, max_error, ]
 
-    def __init__(self, models: dict, y: str = 'suicides_per_100k_pop') -> None:
+    def __init__(self, models: dict, y: str = 'suicides_no') -> None:
         self.models: dict = models
         # self.X_train_std, self.X_test_std, self.Y_train, self.Y_test = utils.get_train_test_split()
         self.splits = utils.get_train_val_test_split(y=y)
