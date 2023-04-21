@@ -94,7 +94,9 @@ class ModelAnalysis:
             )
             if verbose:
                 print(f"{model_name}: {scores[model_name]}")
-        return scores
+        order = max if metric == r2_score else min
+        best = order(scores, key=scores.get)
+        return scores, best
 
     def visualize_predictions(self, sample_range: Tuple = (0, 32), split: str = 'test', palette=sns.color_palette()) -> None:
         """
@@ -130,12 +132,15 @@ class ModelAnalysis:
                 if index >= num_metrcis:
                     break
                 metric = metrics[index]
+                scores, min_score = self.evaluate(
+                    metric=metric, split=split)
                 df = pd.DataFrame({
                     'model': self.models.keys(),
-                    'score': self.evaluate(metric=metric, split=split).values(),
+                    'score': scores.values(),
                 })
                 if verbose:
                     print(metric.__name__)
+                    print(f"min: {min_score}")
                     print(df)
                 sns.barplot(df, x='model', y='score',
                             ax=ax[row][col], palette=palette)
