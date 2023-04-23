@@ -1,23 +1,23 @@
+import math
 import os
-
 from typing import List, Tuple
 
 import matplotlib.pylab as plt
 import pandas as pd
 import seaborn as sns
+import torch
 import utils
 from joblib import dump, load
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.linear_model import LinearRegression
-from sklearn.metrics import (max_error, mean_absolute_error,
-                             mean_squared_error, median_absolute_error,
-                             r2_score, mean_squared_log_error, d2_absolute_error_score)
+from sklearn.metrics import (d2_absolute_error_score, max_error,
+                             mean_absolute_error, mean_squared_error,
+                             mean_squared_log_error, median_absolute_error,
+                             r2_score)
 from sklearn.neighbors import KNeighborsRegressor
 from sklearn.neural_network import MLPRegressor
 from sklearn.tree import DecisionTreeRegressor
 from xgboost.sklearn import XGBRegressor
-
-import math
 
 
 class ModelAnalysis:
@@ -25,10 +25,10 @@ class ModelAnalysis:
     ALL_MODELS_UNTRAINED = {
         'LinearRegression': LinearRegression(positive=False),
         'DecisionTreeRegressor': DecisionTreeRegressor(random_state=0),
-        'MLPRegressor': MLPRegressor(
-            hidden_layer_sizes=[512, 256, 64, 8],
-            max_iter=3000,
-            activation='relu'),
+        # 'MLPRegressor': MLPRegressor(
+        #     hidden_layer_sizes=[512, 256, 64, 8],
+        #     max_iter=3000,
+        #     activation='relu'),
         'XGBRegressor': XGBRegressor(),
         'RandomForestRegressor': RandomForestRegressor(),
         'KNeighborsRegressor': KNeighborsRegressor()
@@ -39,7 +39,7 @@ class ModelAnalysis:
     PALETTE = {
         'LinearRegression': CMAP[0],
         'DecisionTreeRegressor': CMAP[1],
-        'MLPRegressor': CMAP[2],
+        'NN': CMAP[2],
         'XGBRegressor': CMAP[3],
         'RandomForestRegressor': CMAP[4],
         'KNeighborsRegressor': CMAP[5],
@@ -81,7 +81,14 @@ class ModelAnalysis:
     def predict(self, split: str = 'test') -> dict:
         predictions = {}
         for model_name, model in self.models.items():
-            predictions[model_name] = model.predict(self.splits[split]['X'])
+            X = self.splits[split]['X']
+            if model_name == "NN":
+                with torch.no_grad():
+                    model.eval()
+                    pred = model(torch.tensor(X).float())
+                    predictions[model_name] = pred[:, 0]
+            else:
+                predictions[model_name] = model.predict(X)
         self.predictions[split] = predictions
         return predictions
 
