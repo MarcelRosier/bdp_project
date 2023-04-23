@@ -128,11 +128,10 @@ class ModelAnalysis:
         sns.lineplot(pred_df[[k for k in self.models.keys() if k != 'Y']],
                      alpha=.5, ax=ax, palette=palette, linewidth=.8, legend=False)
 
-    def visualize_metrics(self, metrics: List = ALL_METRICS, split: str = 'test', palette=None, verbose=False) -> None:
+    def visualize_metrics(self, metrics: List = ALL_METRICS, split: str = 'test', palette=None, verbose=False, ncols: int = 2) -> None:
         num_metrcis = len(metrics)
-        ncols = 2
-        nrows = math.ceil(num_metrcis / 2)
-        fig, ax = plt.subplots(figsize=(15, 15), nrows=nrows, ncols=ncols)
+        nrows = math.ceil(num_metrcis / ncols)
+        fig, ax = plt.subplots(figsize=(15, 5), nrows=nrows, ncols=ncols)
         for col in range(ncols):
             for row in range(nrows):
                 index = row*ncols + col
@@ -149,6 +148,6 @@ class ModelAnalysis:
                     print(metric.__name__)
                     print(f"min: {min_score}")
                     print(df)
-                sns.barplot(df, x='model', y='score',
-                            ax=ax[row][col], palette=palette)
-                ax[row][col].set_title(metric.__name__)
+                cax = cax = ax[col]  # ax[row][col]
+                sns.barplot(df, x='model', y='score', ax=cax, palette=palette)
+                cax.set_title(metric.__name__)
