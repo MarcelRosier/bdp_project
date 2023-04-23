@@ -93,7 +93,7 @@ Code in [utils.py](mental_health/utils.py).
   - Features:  
      `['country', 'continent', 'sex', 'age', 'year',
 'gdp_per_capita', 'healthcare_coverage', 'gini', 'population']`
-  - Label: `['suicides_no']`
+  - Label: `['suicides_per_100k_pop']`
 
 - Train/ Test split:
   Currently 2 implementations:
