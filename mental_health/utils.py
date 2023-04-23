@@ -149,7 +149,7 @@ def root_mean_squared_error(y_true, y_pred) -> float:
     return mean_squared_error(y_true=y_true, y_pred=y_pred, squared=False)
 
 
-def get_train_val_test_split(X_cols=None, y='suicides_no'):
+def get_train_val_test_split(X_cols=None, y='suicides_per_100k_pop'):
     df = load_suicide_healthcare_gini_df()
     # transform text columns to categories (all unordered, since ordered=False by default)
     df.country = pd.Categorical(df.country).codes
