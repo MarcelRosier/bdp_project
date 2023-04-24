@@ -155,7 +155,11 @@ def get_train_val_test_split(X_cols=None, y='suicides_per_100k_pop'):
     df.country = pd.Categorical(df.country).codes
     df.continent = pd.Categorical(df.continent).codes
     df.sex = pd.Categorical(df.sex).codes
-    df.age = pd.Categorical(df.age).codes
+
+    # ordering needed!
+    categories = ['5-14 years', '15-24 years', '25-34 years', '35-54 years',
+                  '55-74 years', '75+ years']
+    df.age = pd.Categorical(df.age, categories=categories, ordered=True).codes
 
     # extract values
     if not X_cols:
