@@ -128,7 +128,7 @@ class ModelAnalysis:
         ax.set_ylabel('emissions in $CO_2eq$')
         ax.set_xlabel(None)
 
-    def visualize_predictions(self, sample_range: Tuple = (0, 32), split: str = 'test', palette=sns.color_palette(), sort: bool = False) -> None:
+    def visualize_predictions(self, sample_range: Tuple = (0, 255), split: str = 'test', palette=sns.color_palette(), sort: bool = True) -> None:
         """
         Visualizes the predicitons of all models plotted against the ground truth Y
         by default only a subset of predicitons is plotted (0,32), this range can be adapted with @sample_range
@@ -143,8 +143,9 @@ class ModelAnalysis:
             preds_subset = {k: preds[sr_start:sr_end]
                             for k, preds in zip(pred_keys, all_preds_sorted)}
             # map tensor to float
-            preds_subset['NN'] = list(
-                map(lambda x: x.item(), preds_subset['NN']))
+            if 'NN' in preds_subset:
+                preds_subset['NN'] = list(
+                    map(lambda x: x.item(), preds_subset['NN']))
             # print(preds_subset['NN'])
             preds_subset['Y'] = y_sorted[sr_start:sr_end]
         else:
@@ -166,7 +167,7 @@ class ModelAnalysis:
                      alpha=.5, ax=ax, palette=palette, linewidth=.8, legend=False)
         ax.axhline(c='black', alpha=.1)
 
-    def visualize_metrics(self, metrics: List = ALL_METRICS, split: str = 'test', palette=None, verbose=False, ncols: int = 2) -> None:
+    def visualize_metrics(self, metrics: List = ALL_METRICS, split: str = 'test', palette=None, verbose=False, ncols: int = 5, legend: bool = False) -> None:
         num_metrcis = len(metrics)
         nrows = math.ceil(num_metrcis / ncols)
         fig, ax = plt.subplots(figsize=(15, 5), nrows=nrows, ncols=ncols)
@@ -189,14 +190,16 @@ class ModelAnalysis:
                 cax = cax = ax[col]  # ax[row][col]
                 sns.barplot(df, x='model', y='score', ax=cax, palette=palette)
                 cax.set_title(metric.__name__, loc='left')
-                cax.set_xlabel(None)
+                if legend:
+                    cax.set_xlabel(None)
+                    cax.set_xticklabels([])
                 if col > 0:
                     cax.set_ylabel(None)
                 if metric == r2_score:
                     cax.set_ylim((0, 1))
-                cax.set_xticklabels([])
-        patches = [mpatches.Patch(
-            color=self.PALETTE[m],
-            label=m)
-            for m in self.models.keys()]
-        fig.legend(handles=patches)  # , loc='center right')
+        if legend:
+            patches = [mpatches.Patch(
+                color=self.PALETTE[m],
+                label=m)
+                for m in self.models.keys()]
+            fig.legend(handles=patches)  # , loc='center right')
