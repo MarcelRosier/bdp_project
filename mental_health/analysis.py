@@ -177,6 +177,8 @@ class ModelAnalysis:
                 cax.set_xlabel(None)
                 if col > 0:
                     cax.set_ylabel(None)
+                if metric == r2_score:
+                    cax.set_ylim((0,1))
                 cax.set_xticklabels([])
         patches = [mpatches.Patch(
             color=self.PALETTE[m],
