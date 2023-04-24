@@ -134,22 +134,37 @@ class ModelAnalysis:
         by default only a subset of predicitons is plotted (0,32), this range can be adapted with @sample_range
         """
         sr_start, sr_end = sample_range
-        preds_subset = {k: preds[sr_start:sr_end]
-                        for k, preds in self.predictions[split].items()}
-        preds_subset['Y'] = self.splits[split]['y'][sr_start:sr_end]
+        if sort:
+            pred_keys = self.predictions[split].keys()
+            all_preds = self.predictions[split].values()
+            y = self.splits[split]['y']
+            sorted_preds = sorted(zip(y, *all_preds))
+            y_sorted, *all_preds_sorted = zip(*sorted_preds)
+            preds_subset = {k: preds[sr_start:sr_end]
+                            for k, preds in zip(pred_keys, all_preds_sorted)}
+            # map tensor to float
+            preds_subset['NN'] = list(
+                map(lambda x: x.item(), preds_subset['NN']))
+            # print(preds_subset['NN'])
+            preds_subset['Y'] = y_sorted[sr_start:sr_end]
+        else:
+            preds_subset = {k: preds[sr_start:sr_end]
+                            for k, preds in self.predictions[split].items()}
+            preds_subset['Y'] = self.splits[split]['y'][sr_start:sr_end]
 
         pred_df = pd.DataFrame(preds_subset)
 
         fig, ax = plt.subplots(figsize=(15, 7))
         ax.set_xlabel('Datapoint index')
         ax.set_ylabel(
-            'Number of suicides per 100k population (Y and model predicitons)')
+            'Number of suicides per 100k population (Y and model predictions)')
         sns.scatterplot(pred_df, markers=True, alpha=.6,
                         ax=ax, palette=palette)
         sns.lineplot(pred_df.Y, alpha=.9, ax=ax,
                      color=self.Y_COLOR, linewidth=2, legend=False)
         sns.lineplot(pred_df[[k for k in self.models.keys() if k != 'Y']],
                      alpha=.5, ax=ax, palette=palette, linewidth=.8, legend=False)
+        ax.axhline(c='black', alpha=.1)
 
     def visualize_metrics(self, metrics: List = ALL_METRICS, split: str = 'test', palette=None, verbose=False, ncols: int = 2) -> None:
         num_metrcis = len(metrics)
@@ -178,7 +193,7 @@ class ModelAnalysis:
                 if col > 0:
                     cax.set_ylabel(None)
                 if metric == r2_score:
-                    cax.set_ylim((0,1))
+                    cax.set_ylim((0, 1))
                 cax.set_xticklabels([])
         patches = [mpatches.Patch(
             color=self.PALETTE[m],
