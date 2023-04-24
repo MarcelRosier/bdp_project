@@ -2,6 +2,7 @@ import math
 import os
 from typing import List, Tuple
 
+import matplotlib.patches as mpatches
 import matplotlib.pylab as plt
 import pandas as pd
 import seaborn as sns
@@ -110,6 +111,23 @@ class ModelAnalysis:
         best = order(scores, key=scores.get)
         return scores, best
 
+    def visualize_carbon(self):
+        df = pd.read_csv('emissions.csv')
+        df = df[df.project_name.isin(
+            ['linear_default', 'tree_md_18_ms_4', 'forest_ne_30_md_18_ms_2', 'MLP'])]
+        df = df.replace({
+            'linear_default': 'LinearRegression',
+            'tree_md_18_ms_4': 'DecisionTreeRegressor',
+            'forest_ne_30_md_18_ms_2': 'RandomForestRegressor',
+            'MLP': 'NN'
+        })
+        fig, ax = plt.subplots(figsize=(10, 5))
+        sns.barplot(df, x='project_name', y='emissions',
+                    log=True, palette=self.PALETTE, ax=ax)
+        # ax.legend(labels=df.project_name.values)
+        ax.set_ylabel('emissions in $CO_2eq$')
+        ax.set_xlabel(None)
+
     def visualize_predictions(self, sample_range: Tuple = (0, 32), split: str = 'test', palette=sns.color_palette(), sort: bool = False) -> None:
         """
         Visualizes the predicitons of all models plotted against the ground truth Y
@@ -155,4 +173,11 @@ class ModelAnalysis:
                     print(df)
                 cax = cax = ax[col]  # ax[row][col]
                 sns.barplot(df, x='model', y='score', ax=cax, palette=palette)
-                cax.set_title(metric.__name__)
+                cax.set_title(metric.__name__, loc='left')
+                cax.set_xlabel(None)
+                cax.set_xticklabels([])
+        patches = [mpatches.Patch(
+            color=self.PALETTE[m],
+            label=m)
+            for m in self.models.keys()]
+        fig.legend(handles=patches)#, loc='center right')
