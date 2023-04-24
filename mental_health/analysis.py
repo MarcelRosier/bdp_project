@@ -7,6 +7,7 @@ import pandas as pd
 import seaborn as sns
 import torch
 import utils
+from codecarbon import EmissionsTracker
 from joblib import dump, load
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.linear_model import LinearRegression
@@ -15,7 +16,6 @@ from sklearn.metrics import (d2_absolute_error_score, max_error,
                              mean_squared_log_error, median_absolute_error,
                              r2_score)
 from sklearn.neighbors import KNeighborsRegressor
-from sklearn.neural_network import MLPRegressor
 from sklearn.tree import DecisionTreeRegressor
 from xgboost.sklearn import XGBRegressor
 
@@ -60,10 +60,15 @@ class ModelAnalysis:
 
         self.predictions = {}
 
-    def train(self) -> None:
+    def train(self, track_emissions: bool = False) -> None:
         for model_name, model in self.models.items():
+            if track_emissions:
+                tracker = EmissionsTracker(project_name=model_name)
+                tracker.start()
             print(f"Fitting {model_name}")
             model.fit(self.splits['train']['X'], self.splits['train']['y'])
+            if track_emissions:
+                tracker.stop()
 
     def get_models(self) -> dict:
         return self.models
@@ -105,7 +110,7 @@ class ModelAnalysis:
         best = order(scores, key=scores.get)
         return scores, best
 
-    def visualize_predictions(self, sample_range: Tuple = (0, 32), split: str = 'test', palette=sns.color_palette()) -> None:
+    def visualize_predictions(self, sample_range: Tuple = (0, 32), split: str = 'test', palette=sns.color_palette(), sort: bool = False) -> None:
         """
         Visualizes the predicitons of all models plotted against the ground truth Y
         by default only a subset of predicitons is plotted (0,32), this range can be adapted with @sample_range
