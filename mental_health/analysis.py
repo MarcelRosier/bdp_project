@@ -175,9 +175,11 @@ class ModelAnalysis:
                 sns.barplot(df, x='model', y='score', ax=cax, palette=palette)
                 cax.set_title(metric.__name__, loc='left')
                 cax.set_xlabel(None)
+                if col > 0:
+                    cax.set_ylabel(None)
                 cax.set_xticklabels([])
         patches = [mpatches.Patch(
             color=self.PALETTE[m],
             label=m)
             for m in self.models.keys()]
-        fig.legend(handles=patches)#, loc='center right')
+        fig.legend(handles=patches)  # , loc='center right')
