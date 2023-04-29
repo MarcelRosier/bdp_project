@@ -111,7 +111,7 @@ class ModelAnalysis:
         best = order(scores, key=scores.get)
         return scores, best
 
-    def visualize_carbon(self):
+    def visualize_carbon(self, y='emissions'):
         df = pd.read_csv('emissions.csv')
         df = df[df.project_name.isin(
             ['linear_default', 'tree_md_18_ms_4', 'forest_ne_30_md_18_ms_2', 'MLP'])]
@@ -122,10 +122,11 @@ class ModelAnalysis:
             'MLP': 'NN'
         })
         fig, ax = plt.subplots(figsize=(10, 5))
-        sns.barplot(df, x='project_name', y='emissions',
+        sns.barplot(df, x='project_name', y=y,
                     log=True, palette=self.PALETTE, ax=ax)
         # ax.legend(labels=df.project_name.values)
-        ax.set_ylabel('emissions in $CO_2eq$')
+        ax.set_ylabel('emissions in $CO_2eq$' if y ==
+                      'emissions' else y)
         ax.set_xlabel(None)
 
     def visualize_predictions(self, sample_range: Tuple = (0, 255), split: str = 'test', palette=sns.color_palette(), sort: bool = True) -> None:
