@@ -1,5 +1,7 @@
 # Big Data Processes Project
 
+// Enjoy with caution, sections might be outdated.
+
 ## Dataset
 
 The dataset is a merge of 3 main sources:
@@ -115,13 +117,9 @@ Code in [utils.py](mental_health/utils.py).
   - LinearRegression (sklearn)
 - Tree model
   - DecisionTreeRegressor (sklearn)
-- Neighbour model
-  - KNeighborsRegressor (sklearn)
 - Ensemble methods
   - RandomForestRegressor (sklearn)
-  - XGBRegressor (xgboost.sklearn)
 - Neural networks
-  - MLPRegressor (sklearn)
   - Custom MLP (PyTorch)
 
 ### Metrics
@@ -134,4 +132,4 @@ Code in [utils.py](mental_health/utils.py).
 
 ### Model evaluation and comparison
 
-`TODO`
+// Refer to report
