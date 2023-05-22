@@ -120,7 +120,7 @@ Code in [utils.py](mental_health/utils.py).
 - Ensemble methods
   - RandomForestRegressor (sklearn)
 - Neural networks
-  - Custom MLP (PyTorch)
+  - Custom MLP/ NN (PyTorch)
 
 ### Metrics
 
