@@ -2,6 +2,43 @@
 
 // Enjoy with caution, sections might be outdated.
 
+## Project structure
+
+```py
+📦mental_health
+┣ 📂datasets
+┃ ┣ 📜gini.csv
+┃ ┣ 📜healtcare_coverage.csv
+┃ ┣ 📜physicians.csv # dataset that was not sued in the end
+┃ ┣ 📜suicide_dataset.csv
+┃ ┗ 📜suicide_ds_2016.csv
+┣ 📂figures # figures for the report
+┣ 📂legacy
+┃ ┗ 📜merge_data.ipynb # test notebook to mege the 3 datasets together
+┃ ┗ 📜suicide_models.ipynb # initial modelling tests
+┣ 📂models # trained sklearn models
+┣ 📂tb_logs # tensor board logs
+┣ 📂torch_models # trained py torch models
+┣ 📜analysis.py # helper class to fit, use a& compare models
+┣ 📜cleaned_emissions.csv
+┣ 📜compare_features.ipynb # notebook the test which (subset of) features to use
+┣ 📜eda_ds.ipynb # EDA for final dataset
+┣ 📜eda_ds_preproc.ipynb # EDA for final dataset after preprocessing
+┣ 📜eda_gini.ipynb # EDA for GINI dataset
+┣ 📜eda_hc_coverage.ipynb # EDA for healtcare coverage dataset
+┣ 📜eda_suicide.ipynb # EDA for base suicide dataset
+┣ 📜emisison_tracker.ipynb # notebook for emissions tracker test visualizations
+┣ 📜emissions.csv # emissions csv
+┣ 📜model_analysis_showcase.ipynb # example usage of analysis class & eval figures
+┣ 📜models.py # torch models
+┣ 📜nn.ipynb # NN approach
+┣ 📜tSNE.ipynb # code for t-SNE embedding and other tests
+┣ 📜tune_forest.ipynb # tuning of Random forest models
+┣ 📜tune_linear.ipynb # tuning of Linear Regression models
+┣ 📜tune_tree.ipynb # tuning of Decision tree models
+┗ 📜utils.py # helper functions for data loading, cleaning and preprocessing
+```
+
 ## Dataset
 
 The dataset is a merge of 3 main sources:
