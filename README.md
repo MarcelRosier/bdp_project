@@ -19,7 +19,7 @@
 ┣ 📂models # trained sklearn models
 ┣ 📂tb_logs # tensor board logs
 ┣ 📂torch_models # trained py torch models
-┣ 📜analysis.py # helper class to fit, use a& compare models
+┣ 📜analysis.py # helper class to fit, use & compare models
 ┣ 📜cleaned_emissions.csv
 ┣ 📜compare_features.ipynb # notebook the test which (subset of) features to use
 ┣ 📜eda_ds.ipynb # EDA for final dataset
